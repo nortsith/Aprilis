@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#303030">
+    <link rel="shortcut icon" href="public/media/images/aprilis_logo.png">
+    <link rel="stylesheet" type="text/css" href="public/styles/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="public/javascript/index.js" async></script>
+    <script src="public/javascript/server_communication.js" async></script>
+    <title>Aprilis</title>
+  </head>
+  <body>
+    <section class="header">
+      <div class="header_content">
+        <div class="logo">
+          <img src="public/media/images/aprilis_logo.png"></img>
+        </div>
+        <div class="app_name">
+          <div class="centered"><span>Aprilis</span></div>
+        </div>
+        <div class="online_users">
+          <div class="frame centered"><div class="centered "><span id="users"></span></div></div>
+        </div>
+      </div>
+      <div class="add_button">
+        <div class="frame centered"><div class="centered "><span>+</span></div></div>
+      </div>
+    </section>
+    <section class="content">
+      <div class="wrapper" id="games_container">
+      </div>
+    </section>
+    <div id="loading" class="center">
+      <div class="inner"></div>
+      <div class="outer"></div>
+    </div>
+  </body>
+</html>

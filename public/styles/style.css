@@ -1,0 +1,197 @@
+@font-face {
+    font-family: "Roboto";
+    src: url("../media/fonts/Roboto-Light.ttf") format("truetype");
+    font-family: "Roboto-Light";
+    src: url("../media/fonts/Roboto-Thin.ttf") format("truetype");
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+*{
+  transition: all .5s ease;
+  transform: translateZ(0);
+  font-family: "Roboto-Light";
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: transparent;
+  outline: 0;
+}
+
+html, body{
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  perspective: 600px;
+}
+
+span{
+  color: white;
+}
+
+:root{
+ --aprilis: white;
+ --anthracite: #202020;
+ --grey: #404040;
+}
+
+.centered{
+  position: relative;
+  display: inline-block;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+
+.header{
+  width: 100%;
+  height: 70px;
+  background: #FF5F6D;
+  background: -webkit-linear-gradient(to left, #FFC371, #FF5F6D);
+  background: linear-gradient(to left, #FFC371, #FF5F6D);
+}
+
+.header_content{
+  position: relative;
+  display: inline-block;
+  height: 100%;
+  left: 0px;
+  top: 0px;
+}
+
+.logo{
+  position: relative;
+  height: 50px;
+  width: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 10px;
+  cursor: pointer;
+  float: left;
+}
+
+.logo:hover, .chat:hover{
+  transform: translateY(-50%) scale(1.1);
+}
+
+img{
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.app_name{
+  position: relative;
+  display: inline-block;
+  height: 100%;
+  float: left;
+  margin-left: 10px;
+  font-size: 20px;
+}
+
+.online_users{
+  position: relative;
+  display: inline-block;
+  width: 100px;
+  height: 100%;
+  float: left;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.frame{
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  border: 2px white solid;
+}
+
+.frame:hover{
+  transform: translate(-50%,-50%) scale(1.1);
+}
+
+.glow{
+  border: 2px white solid;
+  transform: translate(-50%,-50%) scale(1.1);
+}
+
+.chat{
+  position: relative;
+  display: inline-block;
+  height: 35px;
+  width: 35px;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.add_button{
+  position: absolute;
+  display: inline-block;
+  height: 50px;
+  width: 50px;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.add_button span{
+    color: white;
+    font-family: "Roboto";
+    font-size: 30px;
+}
+
+.content{
+  width: 100%;
+  height: calc(100% - 70px);
+  overflow-y: scroll;
+  background: white;
+}
+
+.wrapper{
+  position: relative;
+  display: inline-block;
+  max-width: 1240px;
+  background: white;
+  left: 50%;
+  transform: translateX(-50%);
+  perspective: 5000px;
+}
+
+@media screen and (max-width:1240px){
+  .wrapper{
+    max-width: 620px;
+  }
+}
+
+@media screen and (max-width:620px){
+  .wrapper{
+    max-width: 310px;
+  }
+}
+
+.game{
+  position: relative;
+  width: 300px;
+  height: 150px;
+  margin: 5px 5px;
+  background: #FF5F6D;
+  background: -webkit-linear-gradient(to left, #FFC371, #FF5F6D);
+  background: linear-gradient(to left, #FFC371, #FF5F6D);
+  cursor: pointer;
+  float: left;
+}
+
+.game:hover{
+  transform: rotateX(20deg);
+  box-shadow: 0 4px 10px -2px gray;
+}

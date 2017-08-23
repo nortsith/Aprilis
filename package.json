@@ -1,0 +1,26 @@
+{
+  "name": "aprilis",
+  "version": "1.0.0",
+  "description": "Aprilis is a hub for role-playing gamers.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onurssx9/Aprilis.git"
+  },
+  "author": "Onur Şahin Şentürk",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/onurssx9/Aprilis/issues"
+  },
+  "homepage": "https://github.com/onurssx9/Aprilis#readme",
+  "devDependencies": {
+    "express": "^4.15.4",
+    "node.js": "0.0.0",
+    "nodemon": "^1.11.0",
+    "socket.io": "^2.0.3"
+  }
+}

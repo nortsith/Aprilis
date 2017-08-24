@@ -26,6 +26,10 @@ io.sockets.on('connection',function(socket){
     console.log('User Disconnected > '+socket.id);
     emit_to_all('user_disconnected',Object.keys(SOCKET_LIST).length);
   });
+
+  socket.on('new_game_added',function(data){
+    emit_to_all('add_new_game',data);
+  });
 });
 
 function emit_to_all(action,variable){

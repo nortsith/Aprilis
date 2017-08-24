@@ -21,23 +21,51 @@
     });
   };
 
+  client.add_game = function(data){
+    jQuery.ajax({
+      url: "/games?data="+JSON.stringify(data),
+      type: 'POST',
+    });
+    socket.emit('new_game_added',data);
+  };
+
+  client.get_data = function(){
+    return {
+      title:jQuery('#data_title'),
+      dungeon_master:jQuery('#data_dungeon_master'),
+      player_limit:jQuery('#data_player_limit'),
+      schedule:jQuery('#data_schedule'),
+      player_level:jQuery('#data_player_level'),
+      description:jQuery('#data_description'),
+      system:jQuery('#data_system'),
+      player_list: []
+    }
+  }
+
   client.create_games = function(games){
     var html = "";
-    for(var i in games){
-      var game = JSON.parse(games[i]);
-
-      html += '<div class="game"><div class="centered"><span>'+game.title+'</span></div></div>';
+    for(var id in games){
+      var game = JSON.parse(games[id]);
+      html += client.generate_game_html(game);
     }
     games_wrapper.append(html);
   };
 
+  client.generate_game_html = function(game){
+    return '<div class="game" search-value="'+game.title.toLowerCase()+'" data-id="'+game.id+'"><div class="centered"><span>'+game.title+'</span></div></div>'
+  };
+
   client.events = function(){
-    socket.on('user_connected',function(user_count){
-      client.update_user_count(user_count);
+    socket.on('add_new_game',function(data){
+      var game = client.generate_game_html(data);
+      games_wrapper.append(game);
     });
-    socket.on('user_disconnected',function(user_count){
-      client.update_user_count(user_count);
-    });
+    // socket.on('user_connected',function(user_count){
+    //   client.update_user_count(user_count);
+    // });
+    // socket.on('user_disconnected',function(user_count){
+    //   client.update_user_count(user_count);
+    // });
   };
 
   client.update_user_count = function(user_count){

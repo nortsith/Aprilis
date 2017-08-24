@@ -9,10 +9,13 @@ router.post('/games', function (req, res) {
   } else{
     res.send(req.query.data);
 
-    function add_game(game){
+    function add_game(data){
       var data_file = fs.readFileSync('./database/games.json');
       var GAMES = JSON.parse(data_file);
-      GAMES[Object.keys(GAMES).length] = game;
+      var id = Object.keys(GAMES).length > 0 ? JSON.parse(GAMES[Object.keys(GAMES).length-1]).id+1 : 1;
+      var game = JSON.parse(data);
+      game.id = id;
+      GAMES[Object.keys(GAMES).length] = JSON.stringify(game);
       var dataJSON = JSON.stringify(GAMES);
       fs.writeFileSync('./database/games.json', dataJSON);
     }
@@ -22,14 +25,3 @@ router.post('/games', function (req, res) {
 });
 
 module.exports = router;
-
-// var data = {
-//   title:"Adı Geçmeyenler Kulübü",
-//   dungeon_master:"Onur Şahin Şentürk",
-//   player_limit:"4",
-//   schedule:"Pazar 12-14",
-//   player_level:"İleri seviye",
-//   description:"Lorem ipsun dolor sit amet",
-//   system:"Custom",
-//   player_list: []
-// }

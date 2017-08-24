@@ -1,8 +1,6 @@
 @font-face {
     font-family: "Roboto";
     src: url("../media/fonts/Roboto-Light.ttf") format("truetype");
-    font-family: "Roboto-Light";
-    src: url("../media/fonts/Roboto-Thin.ttf") format("truetype");
 }
 
 ::-webkit-scrollbar {
@@ -10,9 +8,7 @@
 }
 
 *{
-  transition: all .5s ease;
-  transform: translateZ(0);
-  font-family: "Roboto-Light";
+  font-family: "Roboto";
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -21,6 +17,7 @@
   user-select: none;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
   -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
   outline: 0;
 }
 
@@ -62,8 +59,6 @@ span{
   position: relative;
   display: inline-block;
   height: 100%;
-  left: 0px;
-  top: 0px;
 }
 
 .logo{
@@ -75,10 +70,33 @@ span{
   margin-left: 10px;
   cursor: pointer;
   float: left;
+  transition: all .5s ease;
 }
 
 .logo:hover, .chat:hover{
   transform: translateY(-50%) scale(1.1);
+}
+
+.search_box {
+    position: relative;
+    float: left;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 20px;
+    margin-right: 15px;
+    transition: all .5s ease;
+}
+
+#search{
+    position: relative;
+    outline: 0px;
+    border: none;
+    width: 200px;
+    height: 30px;
+    padding-left: 10px;
+    border-radius: 3px;
+    font-size: 20px;
+    transition: all .5s ease;
 }
 
 img{
@@ -111,6 +129,7 @@ img{
   height: 50px;
   border-radius: 50px;
   border: 2px white solid;
+  transition: all .5s ease;
 }
 
 .frame:hover{
@@ -134,14 +153,15 @@ img{
 }
 
 .add_button{
-  position: absolute;
-  display: inline-block;
+  position: relative;
   height: 50px;
   width: 50px;
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
+  float: right;
+  backface-visibility: hidden;
 }
 
 .add_button span{
@@ -165,6 +185,7 @@ img{
   left: 50%;
   transform: translateX(-50%);
   perspective: 5000px;
+  transition: all .5s ease;
 }
 
 @media screen and (max-width:1240px){
@@ -177,6 +198,9 @@ img{
   .wrapper{
     max-width: 310px;
   }
+  #search{
+    max-width: 100px;
+  }
 }
 
 .game{
@@ -184,14 +208,25 @@ img{
   width: 300px;
   height: 150px;
   margin: 5px 5px;
-  background: #FF5F6D;
-  background: -webkit-linear-gradient(to left, #FFC371, #FF5F6D);
-  background: linear-gradient(to left, #FFC371, #FF5F6D);
+  background: var(--anthracite);
   cursor: pointer;
   float: left;
+  opacity: 1;
+  transform: rotateX(0deg);
+  transition: all 1s ease, width .5s ease, margin 0s;
 }
 
 .game:hover{
   transform: rotateX(20deg);
   box-shadow: 0 4px 10px -2px gray;
+  transition: all .5s ease;
+}
+
+.fade_out_game{
+  display: none;
+  /*opacity: 0;
+  width: 0px;
+  margin: 0px;
+  transform: rotateX(90deg);
+  transition: all .5s ease, width 1s ease, margin 0s;*/
 }

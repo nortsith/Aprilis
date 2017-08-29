@@ -33,7 +33,31 @@
     <section class="content">
       <div class="wrapper" id="games_container">
       </div>
+      <div class="game_content">
+        <div class="wrapper" id="info_container">
+          <h1 id="game_title"></h1>
+          <div class="field"><span class="label">Dungeon Master</span></br><span id="dungeon_master"></span></div>
+          <div class="field"><span class="label">Player Limit</span></br><span id="player_limit"></span></div>
+          <div class="field"><span class="label">Schedule</span></br><span id="schedule"></span></div>
+          <div class="field"><span class="label">Player Level</span></br><span id="player_level"></span></div>
+          <div class="field"><span class="label">System</span></br><span id="system"></span></div>
+          <div class="field"><span class="label">Description</span></br><span id="description"></span></div>
+        </div>
+      </div>
     </section>
+    <div class="blur"></div>
+    <div class="add_game wrapper">
+      <div class="new_game">
+        <div class="field"><input id="data_title" type="text" placeholder="Title" autocomplete="off"></input></div>
+        <div class="field"><input id="data_dungeon_master" type="text" placeholder="Dungeon Master" autocomplete="off"></input></div>
+        <div class="field"><input id="data_player_limit" type="text" placeholder="Player Limit" autocomplete="off"></input></div>
+        <div class="field"><input id="data_schedule" type="text" placeholder="Schedule" autocomplete="off"></input></div>
+        <div class="field"><input id="data_player_level" type="text" placeholder="Player Level" autocomplete="off"></input></div>
+        <div class="field"><input id="data_system" type="text" placeholder="System" autocomplete="off"></input></div>
+        <div class="field"><textarea id="data_description" type="text" cols="40" rows="5" placeholder="Description" autocomplete="off"></textarea></div>
+        <div id="add_button"><div>Add</div></div>
+      </div>
+    </div>
     <div id="loading" class="center">
       <div class="inner"></div>
       <div class="outer"></div>

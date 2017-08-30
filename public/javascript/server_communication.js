@@ -16,7 +16,7 @@
 
   client.get_games = function(){
     jQuery.ajax({
-      url: "/games?type=get",
+      url: "/games?type=getAll",
       type: 'POST',
       success: function(games){
         client.create_games(games);
@@ -69,7 +69,6 @@
         player_level   :inputs[4].value,
         system         :inputs[5].value,
         description    :inputs[6].value,
-        player_list    : []
       };
 
       add_game.fadeOut();
@@ -77,7 +76,7 @@
       jQuery.ajax({
         url: "/games?data="+JSON.stringify(data),
         type: 'POST',
-        success: function(){
+        success: function(data){
           setTimeout(function(){
             blur.fadeOut();
           },500);
@@ -101,16 +100,14 @@
       player_level:jQuery('#data_player_level'),
       system:jQuery('#data_system'),
       description:jQuery('#data_description'),
-      player_list: []
     }
   }
 
   client.create_games = function(games){
     var html = "";
-    for(var id in games){
-      var game = JSON.parse(games[id]);
+    games.forEach(function(game,index){
       html += client.generate_game_html(game);
-    }
+    });
     games_wrapper.append(html);
   };
 
@@ -120,8 +117,8 @@
 
   client.events = function(){
     socket.on('add_new_game',function(data){
-      jQuery('.game').remove();
-      client.get_games();
+      var game = client.generate_game_html(data);
+      games_wrapper.append(game);
     });
 
     jQuery(document).on('click','.game',function(){
@@ -147,24 +144,19 @@
         player_level   = jQuery('#player_level'),
         system         = jQuery('#system'),
         description    = jQuery('#description'),
-        game_id = jQuery(element).attr('data-id');
+        game_id        = jQuery(element).attr('data-id');
 
     jQuery.ajax({
-      url: "/games?type=get",
+      url: "/games?type=getGame&data="+game_id,
       type: 'POST',
-      success: function(games){
-        for(var id in games){
-          if(game_id == JSON.parse(games[id]).id){
-            var game_data = JSON.parse(games[id]);
-            title.text(game_data.title);
-            dungeon_master.text(game_data.dungeon_master);
-            player_limit.text(game_data.player_limit);
-            schedule.text(game_data.schedule);
-            player_level.text(game_data.player_level);
-            system.text(game_data.system);
-            description.text(game_data.description);
-          }
-        }
+      success: function(game){
+        title.text(game.title);
+        dungeon_master.text(game.dungeon_master);
+        player_limit.text(game.player_limit);
+        schedule.text(game.schedule);
+        player_level.text(game.player_level);
+        system.text(game.system);
+        description.text(game.description);
       }
     });
   };

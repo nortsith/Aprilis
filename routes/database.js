@@ -1,26 +1,33 @@
 var express = require('express'),
     path    = require('path'),
     fs      = require('fs'),
+    mysql   = require('mysql'),
     router  = express.Router();
 
+var connection = mysql.createPool({
+  connectionLimit: 60,
+  host: "eu-cdbr-west-01.cleardb.com",
+  user: "bb0fcf20a3ed38",
+  password: "6e04fb58",
+  database: "heroku_8d3437b80905916",
+  multipleStatements: true
+});
+
 router.post('/games', function (req, res) {
-  if(req.query.type == "get"){
-    res.sendFile(path.resolve('./database/games.json'));
+  if(req.query.type == "getAll"){
+    connection.query('SELECT * FROM games',function(error,result){
+      res.send(result);
+    });
+  } else if(req.query.type == "getGame"){
+    connection.query('SELECT * FROM games WHERE id="'+req.query.data+'" LIMIT 1',function(error,result){
+      res.send(result.shift());
+    });
   } else{
-    res.send(req.query.data);
-
-    function add_game(data){
-      var data_file = fs.readFileSync('./database/games.json');
-      var GAMES = JSON.parse(data_file);
-      var id = Object.keys(GAMES).length > 0 ? JSON.parse(GAMES[Object.keys(GAMES).length-1]).id+1 : 1;
-      var game = JSON.parse(data);
-      game.id = id;
-      GAMES[Object.keys(GAMES).length] = JSON.stringify(game);
-      var dataJSON = JSON.stringify(GAMES);
-      fs.writeFileSync('./database/games.json', dataJSON);
-    }
-
-    add_game(req.query.data);
+    var data = JSON.parse(req.query.data);
+    connection.query('INSERT INTO games SET ?',data,function(error,result){
+      data.id = result.insertId;
+      res.send(data);
+    });
   }
 });
 

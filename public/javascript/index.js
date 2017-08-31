@@ -17,17 +17,6 @@
   };
 
   index.updates = function(){
-    content.on('touchend',function(){
-      if(content.scrollLeft() >= (content.width()*0.5)){
-        content.animate({
-          scrollLeft: content.width() + 200
-        });
-      } else if(content.scrollLeft() <= (content.width()*0.5)){
-        content.animate({
-          scrollLeft: 0
-        });
-      }
-    });
   };
 
   index.events = function(){

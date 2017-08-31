@@ -294,9 +294,6 @@ img{
     width: 30px;
     height: 30px;
   }
-  .content{
-    overflow-x: scroll;
-  }
 }
 
 .game{

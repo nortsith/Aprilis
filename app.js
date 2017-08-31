@@ -11,7 +11,7 @@ app.use('/public',express.static(__dirname + '/public'));
 
 app.use('/',database);
 
-serv.listen(process.env.PORT || 2000);
+serv.listen(process.env.PORT || 3000);
 console.log("Server Started");
 
 var SOCKET_LIST = {};

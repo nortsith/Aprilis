@@ -4,8 +4,10 @@
       users_frame   = jQuery('.frame'),
       games_wrapper = jQuery('#games_container'),
       add_button    = jQuery('#add_button'),
-      add_game     = jQuery('.add_game'),
-      blur         = jQuery('.blur');
+      add_game      = jQuery('.add_game'),
+      game_content  = jQuery('.game_content'),
+      blur          = jQuery('.blur'),
+      loading       = jQuery('#loading');
 
   client.init = function(){
     socket.connect();
@@ -20,6 +22,7 @@
       type: 'POST',
       success: function(games){
         client.create_games(games);
+        client.hide_loading(loading,blur);
       }
     });
   };
@@ -109,20 +112,31 @@
       html += client.generate_game_html(game);
     });
     games_wrapper.append(html);
+    setTimeout(function(){
+      jQuery('.game').each(function(index,element){
+        setTimeout(function(){
+          jQuery(element).removeClass('fade_out');
+        },100*index);
+      });
+    },50);
   };
 
   client.generate_game_html = function(game){
-    return '<div class="game" search-value="'+game.title.toLowerCase()+'" data-id="'+game.id+'"><div class="centered"><span>'+game.title+'</span></div></div>'
+    return '<div class="game fade_out" search-value="'+game.title.toLowerCase()+'" data-id="'+game.id+'"><div class="centered"><span>'+game.title+'</span></div></div>'
   };
 
   client.events = function(){
     socket.on('add_new_game',function(data){
       var game = client.generate_game_html(data);
       games_wrapper.append(game);
+      setTimeout(function(){
+        jQuery('.game:last').removeClass('fade_out');
+      },500);
     });
 
     jQuery(document).on('click','.game',function(){
         client.update_game_content(this);
+        client.show_loading(blur,loading);
     });
 
     add_button.on('click',function(){
@@ -157,6 +171,9 @@
         player_level.text(game.player_level);
         system.text(game.system);
         description.text(game.description);
+        game_content.addClass('active');
+        jQuery('.content').addClass('scroll_disable');
+        client.hide_loading(loading,blur);
       }
     });
   };
@@ -182,7 +199,29 @@
     },config.delay || 500);
   };
 
-  client.add_game
+  client.show_loading = function(first,second){
+    first.removeClass('hide');
+    setTimeout(function(){
+      first.removeClass('fade_out');
+      second.removeClass('hide');
+      setTimeout(function(){
+        second.removeClass('fade_out');
+      },500);
+    },100);
+  }
+
+  client.hide_loading = function(first,second){
+    first.addClass('fade_out');
+    setTimeout(function(){
+      first.addClass('hide');
+      setTimeout(function(){
+        second.addClass('fade_out');
+        setTimeout(function(){
+          second.addClass('hide');
+        },500);
+      },100);
+    },500);
+  }
 
   client.init();
 })({});

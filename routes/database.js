@@ -6,10 +6,10 @@ var express = require('express'),
 
 var connection = mysql.createPool({
   connectionLimit: 60,
-  host: process.env.HOST,
-  user: process.env.USER,
-  password: process.env.PASSWORD,
-  database: process.env.database,
+  host: process.env.HOST || "eu-cdbr-west-01.cleardb.com",
+  user: process.env.USER || "bb0fcf20a3ed38",
+  password: process.env.PASSWORD || "6e04fb58",
+  database: process.env.DATABASE || "heroku_8d3437b80905916",
   multipleStatements: true
 });
 

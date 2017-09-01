@@ -1,13 +1,16 @@
 (function(client){
   var socket = io();
-  var online_users  = jQuery('#users'),
-      users_frame   = jQuery('.frame'),
-      games_wrapper = jQuery('#games_container'),
-      add_button    = jQuery('#add_button'),
-      add_game      = jQuery('.add_game'),
-      game_content  = jQuery('.game_content'),
-      blur          = jQuery('.blur'),
-      loading       = jQuery('#loading');
+  var online_users       = jQuery('#users'),
+      users_frame        = jQuery('.frame'),
+      games_wrapper      = jQuery('#games_container'),
+      add_button         = jQuery('#add_button'),
+      add_game           = jQuery('.add_game'),
+      game_content       = jQuery('.game_content'),
+      blur               = jQuery('.blur'),
+      loading            = jQuery('#loading'),
+      comments_container = jQuery('.comments'),
+      comment_input      = jQuery('#data_comment'),
+      send_button        = jQuery('#send_button');
 
   client.init = function(){
     socket.connect();
@@ -134,6 +137,13 @@
       },500);
     });
 
+    socket.on('add_new_comment',function(data){
+      if(data.game_id == game_content.attr('game-id')){
+        var comment = client.generate_comment_html(data.comment);
+        comments_container.append(comment);
+      }
+    });
+
     jQuery(document).on('click','.game',function(){
         client.update_game_content(this);
         client.show_loading(blur,loading);
@@ -142,6 +152,11 @@
     add_button.on('click',function(){
       client.add_game();
     });
+
+    send_button.on('click',function(){
+      client.send_comment();
+    });
+
     // socket.on('user_connected',function(user_count){
     //   client.update_user_count(user_count);
     // });
@@ -149,6 +164,29 @@
     //   client.update_user_count(user_count);
     // });
   };
+
+  client.send_comment = function(){
+    var data = {
+      comment: comment_input.val(),
+      game_id: game_content.attr('game-id')
+    }
+
+    if(data.comment.length > 0){
+      comment_input.removeClass('warning');
+      client.show_loading(blur,loading);
+      jQuery.ajax({
+        url: "/games?type=comment&data="+JSON.stringify(data),
+        type: 'POST',
+        success: function(comment){
+          client.hide_loading(loading,blur);
+          socket.emit('new_comment_added',data);
+          comment_input.val('');
+        }
+      });
+    } else{
+      comment_input.addClass('warning');
+    }
+  }
 
   client.update_game_content = function(element){
     var title          = jQuery('#game_title'),
@@ -171,12 +209,27 @@
         player_level.text(game.player_level);
         system.text(game.system);
         description.text(game.description);
-        game_content.addClass('active');
+        client.update_comments(game.comments);
+        game_content.addClass('active').attr('game-id',game_id);
         jQuery('.content').addClass('scroll_disable');
         client.hide_loading(loading,blur);
       }
     });
   };
+
+  client.update_comments = function(array){
+    var comments = '';
+
+    array.forEach(function(comment,index){
+      comments += client.generate_comment_html(comment);
+    });
+
+    comments_container.html(comments);
+  };
+
+  client.generate_comment_html = function(comment){
+    return '<div class="comment wrap"><span>'+comment+'</span></div></br>';
+  }
 
   client.update_user_count = function(user_count){
     online_users.text(user_count).trigger('change');

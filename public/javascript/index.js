@@ -9,7 +9,9 @@
       add_button   = jQuery('.add_button'),
       add_game     = jQuery('.add_game'),
       blur         = jQuery('.blur'),
-      loading      = jQuery('#loading');
+      loading      = jQuery('#loading'),
+      comments     = jQuery('.comments');
+      info         = jQuery('#info_container');
 
   index.init = function(){
     index.updates();
@@ -29,10 +31,6 @@
       game_content.css('top',content.scrollTop()+'px');
     });
 
-    game_content.on('click',function(){
-      index.enable_scroll();
-    });
-
     aprilis_logo.on('click',function(){
       index.enable_scroll();
     });
@@ -43,6 +41,16 @@
 
     blur.on('click',function(){
       index.hide_elements(add_game,blur);
+    });
+
+    jQuery(document).on('click','.comment',function(){
+      comment = jQuery(this);
+      comment.hasClass('wrap') ? comment.removeClass('wrap') : comment.addClass('wrap');
+      setTimeout(function(){
+        comments.animate({
+          scrollTop: ((comment.position().top + comments.scrollTop()) - comments.position().top) - 5
+        })
+      },100);
     });
   };
 

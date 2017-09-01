@@ -30,6 +30,10 @@ io.sockets.on('connection',function(socket){
   socket.on('new_game_added',function(data){
     emit_to_all('add_new_game',data);
   });
+
+  socket.on('new_comment_added',function(data){
+    emit_to_all('add_new_comment',data);
+  });
 });
 
 function emit_to_all(action,variable){

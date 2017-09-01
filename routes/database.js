@@ -20,7 +20,19 @@ router.post('/games', function (req, res) {
     });
   } else if(req.query.type == "getGame"){
     connection.query('SELECT * FROM games WHERE id="'+req.query.data+'" LIMIT 1',function(error,result){
-      res.send(result.shift());
+      var game_content = result.shift();
+      connection.query('SELECT * FROM comments WHERE game_id="'+req.query.data+'"',function(error,result){
+        game_content.comments = result.map(function(comments){
+          return comments.comment;
+        });
+        res.send(game_content);
+      });
+    });
+  } else if(req.query.type == "comment"){
+    var data = JSON.parse(req.query.data);
+    connection.query('INSERT INTO comments SET ?',data,function(error,result){
+      data.id = result.insertId;
+      res.send(data);
     });
   } else{
     var data = JSON.parse(req.query.data);

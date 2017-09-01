@@ -387,12 +387,13 @@ img{
   background: -webkit-linear-gradient(to left, #FFC371, #FF5F6D);
   background: linear-gradient(to left, #FFC371, #FF5F6D);
   margin-bottom: 5px;
-  padding: 5px;
+  padding: 5px 10px;
   display: inline-block;
   cursor: pointer;
   transition: all .5s ease;
   max-width: 300px;
   overflow: hidden;
+  border-radius: 3px;
 }
 
 .wrap {

@@ -25,7 +25,7 @@
       type: 'POST',
       success: function(games){
         client.create_games(games);
-        client.hide_loading(loading,blur);
+        client.hide_elements(loading,blur);
       }
     });
   };
@@ -77,16 +77,15 @@
         description    :inputs[6].value,
       };
 
-      add_game.fadeOut();
-
       jQuery.ajax({
         url: "/games?data="+JSON.stringify(data),
         type: 'POST',
         success: function(data){
-          setTimeout(function(){
-            blur.fadeOut();
-          },500);
+          client.hide_elements(add_game,blur);
           socket.emit('new_game_added',data);
+          inputs.forEach(function(input,index){
+            input.element.val('');
+          });
         }
       });
 
@@ -146,7 +145,7 @@
 
     jQuery(document).on('click','.game',function(){
         client.update_game_content(this);
-        client.show_loading(blur,loading);
+        client.show_elements(blur,loading);
     });
 
     add_button.on('click',function(){
@@ -173,12 +172,12 @@
 
     if(data.comment.length > 0){
       comment_input.removeClass('warning');
-      client.show_loading(blur,loading);
+      client.show_elements(blur,loading);
       jQuery.ajax({
         url: "/games?type=comment&data="+JSON.stringify(data),
         type: 'POST',
         success: function(comment){
-          client.hide_loading(loading,blur);
+          client.hide_elements(loading,blur);
           socket.emit('new_comment_added',data);
           comment_input.val('');
         }
@@ -212,7 +211,7 @@
         client.update_comments(game.comments);
         game_content.addClass('active').attr('game-id',game_id);
         jQuery('.content').addClass('scroll_disable');
-        client.hide_loading(loading,blur);
+        client.hide_elements(loading,blur);
       }
     });
   };
@@ -252,7 +251,7 @@
     },config.delay || 500);
   };
 
-  client.show_loading = function(first,second){
+  client.show_elements = function(first,second){
     first.removeClass('hide');
     setTimeout(function(){
       first.removeClass('fade_out');
@@ -263,7 +262,7 @@
     },100);
   }
 
-  client.hide_loading = function(first,second){
+  client.hide_elements = function(first,second){
     first.addClass('fade_out');
     setTimeout(function(){
       first.addClass('hide');

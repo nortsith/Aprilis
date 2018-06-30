@@ -31,6 +31,10 @@ io.sockets.on('connection',function(socket){
     emit_to_all('add_new_game',data);
   });
 
+  socket.on('game_removed',function(data){
+    emit_to_all('game_removed',data);
+  });
+
   socket.on('new_comment_added',function(data){
     emit_to_all('add_new_comment',data);
   });

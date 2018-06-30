@@ -34,6 +34,10 @@ router.post('/games', function (req, res) {
       data.id = result.insertId;
       res.send(data);
     });
+} else if(req.query.type == "removeGame"){
+    connection.query('DELETE FROM games WHERE id="'+req.query.data+'"',function(error,result){
+      res.send(req.query.data);
+    });
   } else{
     var data = JSON.parse(req.query.data);
     connection.query('INSERT INTO games SET ?',data,function(error,result){

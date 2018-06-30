@@ -494,3 +494,24 @@ img{
 .warning{
   background: #cecece;
 }
+
+.trademark{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    width: 100%;
+    bottom: 5px;
+    left: 0;
+}
+
+.trademark a{
+    font-size: 12px;
+    text-decoration: none;
+    color: #cacaca;
+    transition: all .5s ease;
+}
+
+.trademark a:hover{
+    color: #999;
+}

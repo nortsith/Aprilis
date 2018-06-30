@@ -8,7 +8,10 @@
       game_content = jQuery('.game_content'),
       add_button   = jQuery('.add_button'),
       add_game     = jQuery('.add_game'),
-      blur         = jQuery('.blur');
+      blur         = jQuery('.blur'),
+      loading      = jQuery('#loading'),
+      comments     = jQuery('.comments');
+      info         = jQuery('#info_container');
 
   index.init = function(){
     index.updates();
@@ -16,7 +19,6 @@
   };
 
   index.updates = function(){
-
   };
 
   index.events = function(){
@@ -29,33 +31,52 @@
       game_content.css('top',content.scrollTop()+'px');
     });
 
-    jQuery(document).on('click','.game',function(){
-        game_content.addClass('active');
-        jQuery('.content').addClass('scroll_disable');
-    });
-
-    game_content.on('click',function(){
-      index.enable_scroll();
-    });
-
     aprilis_logo.on('click',function(){
       index.enable_scroll();
     });
 
     add_button.on('click',function(){
-      blur.fadeIn();
-      setTimeout(function(){
-        add_game.fadeIn();
-      },500);
+      index.show_elements(blur,add_game);
     });
 
     blur.on('click',function(){
-      add_game.fadeOut();
+      index.hide_elements(add_game,blur);
+    });
+
+    jQuery(document).on('click','.comment',function(){
+      comment = jQuery(this);
+      comment.hasClass('wrap') ? comment.removeClass('wrap') : comment.addClass('wrap');
       setTimeout(function(){
-        blur.fadeOut();
-      },500);
+        comments.animate({
+          scrollTop: ((comment.position().top + comments.scrollTop()) - comments.position().top) - 5
+        })
+      },100);
     });
   };
+
+  index.show_elements = function(first,second){
+    first.removeClass('hide');
+    setTimeout(function(){
+      first.removeClass('fade_out');
+      second.removeClass('hide');
+      setTimeout(function(){
+        second.removeClass('fade_out');
+      },500);
+    },100);
+  }
+
+  index.hide_elements = function(first,second){
+    first.addClass('fade_out');
+    setTimeout(function(){
+      first.addClass('hide');
+      setTimeout(function(){
+        second.addClass('fade_out');
+        setTimeout(function(){
+          second.addClass('hide');
+        },500);
+      },100);
+    },500);
+  }
 
   index.enable_scroll = function(){
     game_content.removeClass('active');

@@ -1,11 +1,16 @@
 (function(client){
   var socket = io();
-  var online_users  = jQuery('#users'),
-      users_frame   = jQuery('.frame'),
-      games_wrapper = jQuery('#games_container'),
-      add_button    = jQuery('#add_button'),
-      add_game     = jQuery('.add_game'),
-      blur         = jQuery('.blur');
+  var online_users       = jQuery('#users'),
+      users_frame        = jQuery('.frame'),
+      games_wrapper      = jQuery('#games_container'),
+      add_button         = jQuery('#add_button'),
+      add_game           = jQuery('.add_game'),
+      game_content       = jQuery('.game_content'),
+      blur               = jQuery('.blur'),
+      loading            = jQuery('#loading'),
+      comments_container = jQuery('.comments'),
+      comment_input      = jQuery('#data_comment'),
+      send_button        = jQuery('#send_button');
 
   client.init = function(){
     socket.connect();
@@ -16,10 +21,11 @@
 
   client.get_games = function(){
     jQuery.ajax({
-      url: "/games?type=get",
+      url: "/games?type=getAll",
       type: 'POST',
       success: function(games){
         client.create_games(games);
+        client.hide_elements(loading,blur);
       }
     });
   };
@@ -69,19 +75,17 @@
         player_level   :inputs[4].value,
         system         :inputs[5].value,
         description    :inputs[6].value,
-        player_list    : []
       };
-
-      add_game.fadeOut();
 
       jQuery.ajax({
         url: "/games?data="+JSON.stringify(data),
         type: 'POST',
-        success: function(){
-          setTimeout(function(){
-            blur.fadeOut();
-          },500);
+        success: function(data){
+          client.hide_elements(add_game,blur);
           socket.emit('new_game_added',data);
+          inputs.forEach(function(input,index){
+            input.element.val('');
+          });
         }
       });
 
@@ -101,36 +105,57 @@
       player_level:jQuery('#data_player_level'),
       system:jQuery('#data_system'),
       description:jQuery('#data_description'),
-      player_list: []
     }
   }
 
   client.create_games = function(games){
     var html = "";
-    for(var id in games){
-      var game = JSON.parse(games[id]);
+    games.forEach(function(game,index){
       html += client.generate_game_html(game);
-    }
+    });
     games_wrapper.append(html);
+    setTimeout(function(){
+      jQuery('.game').each(function(index,element){
+        setTimeout(function(){
+          jQuery(element).removeClass('fade_out');
+        },100*index);
+      });
+    },50);
   };
 
   client.generate_game_html = function(game){
-    return '<div class="game" search-value="'+game.title.toLowerCase()+'" data-id="'+game.id+'"><div class="centered"><span>'+game.title+'</span></div></div>'
+    return '<div class="game fade_out" search-value="'+game.title.toLowerCase()+'" data-id="'+game.id+'"><div class="centered"><span>'+game.title+'</span></div></div>'
   };
 
   client.events = function(){
     socket.on('add_new_game',function(data){
-      jQuery('.game').remove();
-      client.get_games();
+      var game = client.generate_game_html(data);
+      games_wrapper.append(game);
+      setTimeout(function(){
+        jQuery('.game:last').removeClass('fade_out');
+      },500);
+    });
+
+    socket.on('add_new_comment',function(data){
+      if(data.game_id == game_content.attr('game-id')){
+        var comment = client.generate_comment_html(data.comment);
+        comments_container.append(comment);
+      }
     });
 
     jQuery(document).on('click','.game',function(){
         client.update_game_content(this);
+        client.show_elements(blur,loading);
     });
 
     add_button.on('click',function(){
       client.add_game();
     });
+
+    send_button.on('click',function(){
+      client.send_comment();
+    });
+
     // socket.on('user_connected',function(user_count){
     //   client.update_user_count(user_count);
     // });
@@ -138,6 +163,29 @@
     //   client.update_user_count(user_count);
     // });
   };
+
+  client.send_comment = function(){
+    var data = {
+      comment: comment_input.val(),
+      game_id: game_content.attr('game-id')
+    }
+
+    if(data.comment.length > 0){
+      comment_input.removeClass('warning');
+      client.show_elements(blur,loading);
+      jQuery.ajax({
+        url: "/games?type=comment&data="+JSON.stringify(data),
+        type: 'POST',
+        success: function(comment){
+          client.hide_elements(loading,blur);
+          socket.emit('new_comment_added',data);
+          comment_input.val('');
+        }
+      });
+    } else{
+      comment_input.addClass('warning');
+    }
+  }
 
   client.update_game_content = function(element){
     var title          = jQuery('#game_title'),
@@ -147,27 +195,40 @@
         player_level   = jQuery('#player_level'),
         system         = jQuery('#system'),
         description    = jQuery('#description'),
-        game_id = jQuery(element).attr('data-id');
+        game_id        = jQuery(element).attr('data-id');
 
     jQuery.ajax({
-      url: "/games?type=get",
+      url: "/games?type=getGame&data="+game_id,
       type: 'POST',
-      success: function(games){
-        for(var id in games){
-          if(game_id == JSON.parse(games[id]).id){
-            var game_data = JSON.parse(games[id]);
-            title.text(game_data.title);
-            dungeon_master.text(game_data.dungeon_master);
-            player_limit.text(game_data.player_limit);
-            schedule.text(game_data.schedule);
-            player_level.text(game_data.player_level);
-            system.text(game_data.system);
-            description.text(game_data.description);
-          }
-        }
+      success: function(game){
+        title.text(game.title);
+        dungeon_master.text(game.dungeon_master);
+        player_limit.text(game.player_limit);
+        schedule.text(game.schedule);
+        player_level.text(game.player_level);
+        system.text(game.system);
+        description.text(game.description);
+        client.update_comments(game.comments);
+        game_content.addClass('active').attr('game-id',game_id);
+        jQuery('.content').addClass('scroll_disable');
+        client.hide_elements(loading,blur);
       }
     });
   };
+
+  client.update_comments = function(array){
+    var comments = '';
+
+    array.forEach(function(comment,index){
+      comments += client.generate_comment_html(comment);
+    });
+
+    comments_container.html(comments);
+  };
+
+  client.generate_comment_html = function(comment){
+    return '<div class="comment wrap"><span>'+comment+'</span></div></br>';
+  }
 
   client.update_user_count = function(user_count){
     online_users.text(user_count).trigger('change');
@@ -190,7 +251,29 @@
     },config.delay || 500);
   };
 
-  client.add_game
+  client.show_elements = function(first,second){
+    first.removeClass('hide');
+    setTimeout(function(){
+      first.removeClass('fade_out');
+      second.removeClass('hide');
+      setTimeout(function(){
+        second.removeClass('fade_out');
+      },500);
+    },100);
+  }
+
+  client.hide_elements = function(first,second){
+    first.addClass('fade_out');
+    setTimeout(function(){
+      first.addClass('hide');
+      setTimeout(function(){
+        second.addClass('fade_out');
+        setTimeout(function(){
+          second.addClass('hide');
+        },500);
+      },100);
+    },500);
+  }
 
   client.init();
 })({});

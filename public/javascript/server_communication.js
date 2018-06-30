@@ -124,7 +124,10 @@
   };
 
   client.generate_game_html = function(game){
-    return '<div class="game fade_out" search-value="'+game.title.toLowerCase()+'" data-id="'+game.id+'"><div class="centered"><span>'+game.title+'</span></div></div>'
+    return '<div class="game fade_out" search-value="'+game.title.toLowerCase()+'" data-id="'+game.id+'">' +
+                '<div class="centered"><span>'+game.title+'</span></div>' +
+                (location.href.indexOf('YubkkAdmin1626733881136404') > -1 && '<div class="remove" data-id="' + game.id + '">&#10006;</div>' || '') +
+           '</div>';
   };
 
   client.events = function(){
@@ -134,6 +137,13 @@
       setTimeout(function(){
         jQuery('.game:last').removeClass('fade_out');
       },500);
+    });
+
+    socket.on('game_removed',function(data){
+        jQuery('.game[data-id="' + data + '"]').addClass('fade_out');
+        setTimeout(function(){
+            jQuery('.game[data-id="' + data + '"]').remove();
+        },500);
     });
 
     socket.on('add_new_comment',function(data){
@@ -147,6 +157,13 @@
         client.update_game_content(this);
         client.show_elements(blur,loading);
     });
+
+    jQuery(document).on('click','.remove',function(e){
+        e.preventDefault()
+        e.stopPropagation();
+        client.remove_game(this);
+        client.show_elements(blur,loading);
+    })
 
     add_button.on('click',function(){
       client.add_game();
@@ -211,6 +228,19 @@
         client.update_comments(game.comments);
         game_content.addClass('active').attr('game-id',game_id);
         jQuery('.content').addClass('scroll_disable');
+        client.hide_elements(loading,blur);
+      }
+    });
+  };
+
+  client.remove_game = function(element){
+    var game_id = jQuery(element).attr('data-id');
+    jQuery.ajax({
+      url: "/games?type=removeGame&data="+game_id,
+      type: 'POST',
+      success: function(response){
+        jQuery('.game[data-id="' + response + '"]').remove();
+        socket.emit('game_removed',response);
         client.hide_elements(loading,blur);
       }
     });

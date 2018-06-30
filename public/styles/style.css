@@ -325,6 +325,17 @@ img{
   transition: all .5s ease, width 1s ease, margin 0s;
 }
 
+.remove {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: white;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+}
+
 #info_container{
     background: transparent;
 }
